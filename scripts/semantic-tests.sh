@@ -21,21 +21,19 @@ test_rename_network_opsfile() {
 }
 
 test_aws_opsfile() {
-    local amazon_doppler_port="4443"
+    local aws_doppler_port="4443"
     local manifest_file=$(mktemp)
 
     bosh int cf-deployment.yml \
       -o operations/aws.yml > $manifest_file
 
-    local interpolated_doppler_port=$(yq r $manifest_file -j | jq -r '.instance_groups[] | select(.name == "api") | .jobs[] | select(.name == "cloud_controller_ng") | .properties[].doppler[].port')
-
-    if [ $num_uniq_networks != "1" ]; then
-      fail "rename-network.yml: expected to find the same network name for all instance groups"
-    elif [ $interpolated_network_names != $new_network ]; then
-      fail "rename-network.yml: expected network name to be changed to ${new_network}"
-    else
-      pass "rename-network.yml"
-    fi
+    local interpolated_doppler_ports=$( yq r $manifest_file -j | jq -r '.instance_groups[].jobs[].properties.doppler.port|numbers')
+    for i in $interpolated_doppler_ports; do
+      if [ $i != $aws_doppler_port ]; then
+        fail "Not all doppler ports are $aws_doppler_port"
+      fi
+    done
+    pass "aws.yml"
 }
 
 test_scale_to_one_az() {
@@ -145,6 +143,7 @@ semantic_tests() {
 
   pushd ${home} > /dev/null
     test_rename_network_opsfile
+    test_aws_opsfile
     test_scale_to_one_az
     test_use_compiled_releases
     test_disable_consul
@@ -153,4 +152,3 @@ semantic_tests() {
   popd > /dev/null
   exit $exit_code
 }
-
