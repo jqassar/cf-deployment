@@ -20,6 +20,24 @@ test_rename_network_opsfile() {
     fi
 }
 
+test_aws_opsfile() {
+    local amazon_doppler_port="4443"
+    local manifest_file=$(mktemp)
+
+    bosh int cf-deployment.yml \
+      -o operations/aws.yml > $manifest_file
+
+    local interpolated_doppler_port=$(yq r $manifest_file -j | jq -r '.instance_groups[] | select(.name == "api") | .jobs[] | select(.name == "cloud_controller_ng") | .properties[].doppler[].port')
+
+    if [ $num_uniq_networks != "1" ]; then
+      fail "rename-network.yml: expected to find the same network name for all instance groups"
+    elif [ $interpolated_network_names != $new_network ]; then
+      fail "rename-network.yml: expected network name to be changed to ${new_network}"
+    else
+      pass "rename-network.yml"
+    fi
+}
+
 test_scale_to_one_az() {
     local manifest_file=$(mktemp)
 
