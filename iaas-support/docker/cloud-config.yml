@@ -1,0 +1,184 @@
+azs:
+- name: z1
+- name: z2
+- name: z3
+
+compilation:
+  az: z1
+  network: default
+  reuse_compilation_vms: true
+  vm_type: default
+  workers: 5
+
+disk_types:
+- disk_size: 1024
+  name: 1GB
+- disk_size: 5120
+  name: 5GB
+- disk_size: 10240
+  name: 10GB
+- disk_size: 100240
+  name: 100GB
+# Note: the "default" disk type is not used in cf-deployment.
+# it is included for compatibility with the bosh-deployment
+# cloud-config.
+- disk_size: 1024
+  name: default
+
+networks:
+- name: default
+  subnets:
+  - azs: [z1, z2, z3]
+    cloud_properties:
+      name: ((network))
+    dns:
+    - 8.8.8.8
+    gateway: 10.245.0.1
+    range: 10.245.0.0/20
+    reserved: 
+    - 10.245.0.2 - 10.245.0.10
+    static:
+    - 10.245.0.11 - 10.245.0.127
+    - 10.245.1.0  - 10.245.1.127
+    - 10.245.2.0  - 10.245.2.127
+    - 10.245.3.0  - 10.245.3.127
+
+    # IPs that will not be used for anything
+#    static:
+#    - 10.245.0.34
+
+vm_extensions:
+- name: 5GB_ephemeral_disk
+- name: 10GB_ephemeral_disk
+- name: 50GB_ephemeral_disk
+- name: 100GB_ephemeral_disk
+- name: 500GB_ephemeral_disk
+- name: 1TB_ephemeral_disk
+- name: all_ports
+  cloud_properties:
+    ports:
+    - 22/tcp
+- name: cf-router-network-properties
+- name: cf-tcp-router-network-properties
+  cloud_properties:
+    ports:
+    - 1024/tcp
+    - 1025/tcp
+    - 1026/tcp
+    - 1027/tcp
+    - 1028/tcp
+    - 1029/tcp
+    - 1030/tcp
+    - 1031/tcp
+    - 1032/tcp
+    - 1033/tcp
+    - 1034/tcp
+    - 1035/tcp
+    - 1036/tcp
+    - 1037/tcp
+    - 1038/tcp
+    - 1039/tcp
+    - 1040/tcp
+    - 1041/tcp
+    - 1042/tcp
+    - 1043/tcp
+    - 1044/tcp
+    - 1045/tcp
+    - 1046/tcp
+    - 1047/tcp
+    - 1048/tcp
+    - 1049/tcp
+    - 1050/tcp
+    - 1051/tcp
+    - 1052/tcp
+    - 1053/tcp
+    - 1054/tcp
+    - 1055/tcp
+    - 1056/tcp
+    - 1057/tcp
+    - 1058/tcp
+    - 1059/tcp
+    - 1060/tcp
+    - 1061/tcp
+    - 1062/tcp
+    - 1063/tcp
+    - 1064/tcp
+    - 1065/tcp
+    - 1066/tcp
+    - 1067/tcp
+    - 1068/tcp
+    - 1069/tcp
+    - 1070/tcp
+    - 1071/tcp
+    - 1072/tcp
+    - 1073/tcp
+    - 1074/tcp
+    - 1075/tcp
+    - 1076/tcp
+    - 1077/tcp
+    - 1078/tcp
+    - 1079/tcp
+    - 1080/tcp
+    - 1081/tcp
+    - 1082/tcp
+    - 1083/tcp
+    - 1084/tcp
+    - 1085/tcp
+    - 1086/tcp
+    - 1087/tcp
+    - 1088/tcp
+    - 1089/tcp
+    - 1090/tcp
+    - 1091/tcp
+    - 1092/tcp
+    - 1093/tcp
+    - 1094/tcp
+    - 1095/tcp
+    - 1096/tcp
+    - 1097/tcp
+    - 1098/tcp
+    - 1099/tcp
+    - 1100/tcp
+    - 1101/tcp
+    - 1102/tcp
+    - 1103/tcp
+    - 1104/tcp
+    - 1105/tcp
+    - 1106/tcp
+    - 1107/tcp
+    - 1108/tcp
+    - 1109/tcp
+    - 1110/tcp
+    - 1111/tcp
+    - 1112/tcp
+    - 1113/tcp
+    - 1114/tcp
+    - 1115/tcp
+    - 1116/tcp
+    - 1117/tcp
+    - 1118/tcp
+    - 1119/tcp
+    - 1120/tcp
+    - 1121/tcp
+    - 1122/tcp
+    - 1123/tcp
+- name: credhub-lb
+  cloud_properties:
+    ports:
+    - 8845/tcp
+- name: diego-ssh-proxy-network-properties
+- name: ssh-proxy-and-router-lb
+  cloud_properties:
+    ports:
+    - 80/tcp
+    - 443/tcp
+    - 2222/tcp
+
+vm_types:
+- name: minimal
+- name: small
+- name: small-highmem
+# Note: the "default" vm type is not used in cf-deployment.
+# it is included for compatibility with the bosh-deployment
+# cloud-config.
+- name: default
